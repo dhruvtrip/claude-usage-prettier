@@ -184,21 +184,133 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .footer-content a:hover { text-decoration: underline; }
 
   @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } .chart-card.wide { grid-column: 1; } }
+
+  /* ── View toggle ──────────────────────────────────────────────────────── */
+  .view-toggle { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; margin-right: 8px; }
+  .view-toggle button { padding: 4px 12px; background: transparent; border: none; border-right: 1px solid var(--border-strong); color: var(--muted); font-size: 12px; cursor: pointer; font-weight: 500; }
+  .view-toggle button:last-child { border-right: none; }
+  .view-toggle button:hover { background: var(--warm-sand); color: var(--text); }
+  .view-toggle button.active { background: var(--accent-bg); color: var(--accent); }
+  .header-controls { display: flex; align-items: center; gap: 10px; }
+
+  /* ── Mode-specific visibility ─────────────────────────────────────────── */
+  body.view-simple .advanced-only { display: none !important; }
+  body.view-advanced .simple-only { display: none !important; }
+
+  /* ── Simple mode: plan picker chip ───────────────────────────────────── */
+  .plan-picker { background: var(--card); border: 1px solid var(--border-strong); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .plan-picker .prompt { font-size: 13px; color: var(--secondary); font-weight: 500; }
+  .plan-picker .plan-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .plan-chip { padding: 5px 12px; border-radius: 16px; border: 1px solid var(--border-strong); background: transparent; color: var(--secondary); font-size: 12px; cursor: pointer; transition: all 0.15s; }
+  .plan-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .plan-chip.selected { background: var(--accent); color: var(--card); border-color: var(--accent); }
+  .plan-picker .dismiss { margin-left: auto; background: transparent; border: none; color: var(--muted); font-size: 12px; cursor: pointer; padding: 4px 8px; }
+  .plan-picker .dismiss:hover { color: var(--text); }
+
+  /* ── Simple mode: headline banner ────────────────────────────────────── */
+  .headline { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+  .headline .eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px; }
+  .headline .summary { font-family: Georgia, serif; font-size: 22px; line-height: 1.4; color: var(--text); font-weight: 500; }
+  .headline .summary strong { color: var(--accent); font-weight: 600; }
+  .headline .intensity-row { margin-top: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .intensity-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .intensity-pill.light { background: #dbeafe; color: #1e40af; }
+  .intensity-pill.typical { background: #dcfce7; color: #166534; }
+  .intensity-pill.heavy { background: #fef3c7; color: #92400e; }
+  .intensity-pill.power { background: var(--accent-bg); color: var(--accent); }
+  .intensity-desc { font-size: 12px; color: var(--muted); }
+
+  /* ── Simple mode: plan comparison ────────────────────────────────────── */
+  .plan-comparison { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+  .plan-comparison .title { font-family: Georgia, serif; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .plan-comparison .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .plan-card { border: 1px solid var(--border-strong); border-radius: 10px; padding: 14px; position: relative; transition: border-color 0.15s, background 0.15s; }
+  .plan-card.current { border-color: var(--accent); background: var(--accent-bg); }
+  .plan-card .plan-name { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .plan-card .plan-price { font-family: Georgia, serif; font-size: 22px; font-weight: 500; color: var(--text); line-height: 1.1; }
+  .plan-card .plan-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .plan-card .plan-status { font-size: 11px; margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+  .plan-card .plan-status.ok { color: #166534; }
+  .plan-card .plan-status.warn { color: #92400e; }
+  .plan-card .plan-status.exceed { color: #b91c1c; }
+  .plan-card .current-badge { position: absolute; top: -8px; right: 10px; background: var(--accent); color: var(--card); font-size: 10px; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  /* ── Simple mode: human-scale stats ──────────────────────────────────── */
+  .simple-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .simple-stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+  .simple-stat .icon { font-size: 20px; margin-bottom: 8px; color: var(--accent); }
+  .simple-stat .simple-label { font-size: 13px; font-weight: 500; color: var(--secondary); margin-bottom: 6px; }
+  .simple-stat .simple-value { font-family: Georgia, serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1.1; }
+  .simple-stat .simple-sub { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: monospace; }
+
+  /* ── Simple mode: activity heatmap ───────────────────────────────────── */
+  .heatmap-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+  .heatmap-card .title { font-family: Georgia, serif; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .heatmap-card .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .heatmap-grid { display: grid; grid-template-columns: repeat(13, 1fr); grid-auto-rows: 14px; gap: 3px; max-width: 640px; }
+  .heatmap-cell { background: var(--border); border-radius: 2px; aspect-ratio: 1; cursor: pointer; transition: transform 0.1s; }
+  .heatmap-cell:hover { transform: scale(1.35); }
+  .heatmap-cell[data-level="0"] { background: var(--border); }
+  .heatmap-cell[data-level="1"] { background: #f4c9b8; }
+  .heatmap-cell[data-level="2"] { background: #e89877; }
+  .heatmap-cell[data-level="3"] { background: #d4774f; }
+  .heatmap-cell[data-level="4"] { background: var(--accent); }
+  .heatmap-legend { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--muted); justify-content: flex-end; }
+  .heatmap-legend .swatch { width: 12px; height: 12px; border-radius: 2px; }
+
+  /* ── Simple mode: reframed projects ──────────────────────────────────── */
+  .projects-simple { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+  .projects-simple .title { font-family: Georgia, serif; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .projects-simple .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .project-bar { display: grid; grid-template-columns: minmax(120px, 200px) 1fr auto; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .project-bar:last-child { border-bottom: none; }
+  .project-bar .proj-name { font-size: 13px; color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .project-bar .proj-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .project-bar .proj-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+  .project-bar .proj-count { font-size: 12px; color: var(--muted); font-family: monospace; white-space: nowrap; }
+
+  /* ── Tooltip (?) for jargon ───────────────────────────────────────────── */
+  .jargon { position: relative; cursor: help; border-bottom: 1px dotted var(--muted); }
+  .jargon:hover::after, .jargon:focus::after {
+    content: attr(data-tooltip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--text); color: var(--card); padding: 8px 12px; border-radius: 6px;
+    font-size: 11px; font-weight: normal; line-height: 1.5; white-space: normal;
+    width: max-content; max-width: 260px; z-index: 100; text-transform: none; letter-spacing: 0;
+    box-shadow: rgba(0,0,0,0.2) 0px 4px 12px;
+  }
+  .jargon:hover::before, .jargon:focus::before {
+    content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: var(--text); z-index: 100;
+  }
+  .help-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: var(--warm-sand); color: var(--secondary); font-size: 10px; font-weight: 600; margin-left: 3px; cursor: help; }
+
+  @media (max-width: 768px) {
+    .heatmap-grid { max-width: 100%; }
+    .headline .summary { font-size: 18px; }
+  }
 </style>
 </head>
 <body>
 <header>
   <h1>Claude Code Usage Dashboard</h1>
   <div class="meta" id="meta">Loading...</div>
-  <button id="rescan-btn" onclick="triggerRescan()" title="Rebuild the database from scratch by re-scanning all JSONL files. Use if data looks stale or costs seem wrong.">&#x21bb; Rescan</button>
+  <div class="header-controls">
+    <div class="view-toggle" role="tablist" aria-label="Dashboard view mode">
+      <button id="view-simple-btn" role="tab" aria-selected="true" onclick="setViewMode('simple')">Simple</button>
+      <button id="view-advanced-btn" role="tab" aria-selected="false" onclick="setViewMode('advanced')">Advanced</button>
+    </div>
+    <button id="rescan-btn" onclick="triggerRescan()" title="Rebuild the database from scratch by re-scanning all JSONL files. Use if data looks stale or costs seem wrong.">&#x21bb; Rescan</button>
+  </div>
 </header>
 
 <div id="filter-bar">
-  <div class="filter-label">Models</div>
-  <div id="model-checkboxes"></div>
-  <button class="filter-btn" onclick="selectAllModels()">All</button>
-  <button class="filter-btn" onclick="clearAllModels()">None</button>
-  <div class="filter-sep"></div>
+  <div class="advanced-only filter-label">Models</div>
+  <div class="advanced-only" id="model-checkboxes"></div>
+  <button class="advanced-only filter-btn" onclick="selectAllModels()">All</button>
+  <button class="advanced-only filter-btn" onclick="clearAllModels()">None</button>
+  <div class="advanced-only filter-sep"></div>
   <div class="filter-label">Range</div>
   <div class="range-group">
     <button class="range-btn" data-range="7d"  onclick="setRange('7d')">7d</button>
@@ -209,8 +321,61 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 </div>
 
 <div class="container">
-  <div class="stats-row" id="stats-row"></div>
-  <div class="charts-grid">
+  <!-- ── Simple mode ───────────────────────────────────────────────── -->
+  <div class="simple-only" id="simple-view">
+    <div class="plan-picker" id="plan-picker">
+      <span class="prompt">Which plan are you on?</span>
+      <div class="plan-options">
+        <button class="plan-chip" data-plan="pro" onclick="setUserPlan('pro')">Pro</button>
+        <button class="plan-chip" data-plan="max5" onclick="setUserPlan('max5')">Max 5&times;</button>
+        <button class="plan-chip" data-plan="max20" onclick="setUserPlan('max20')">Max 20&times;</button>
+        <button class="plan-chip" data-plan="api" onclick="setUserPlan('api')">API</button>
+      </div>
+      <button class="dismiss" onclick="dismissPlanPicker()" aria-label="Dismiss plan picker">&times; Dismiss</button>
+    </div>
+
+    <div class="headline">
+      <div class="eyebrow" id="headline-range">Last 30 days</div>
+      <div class="summary" id="headline-summary">&nbsp;</div>
+      <div class="intensity-row">
+        <span class="intensity-pill" id="intensity-pill">&nbsp;</span>
+        <span class="intensity-desc" id="intensity-desc">&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="plan-comparison">
+      <div class="title" id="plan-comparison-title">What this would cost on each plan</div>
+      <div class="subtitle">Subscription prices are fixed monthly. API is pay-per-use, based on the tokens you consumed. Rate-limit status is approximate.</div>
+      <div class="plan-grid" id="plan-grid"></div>
+    </div>
+
+    <div class="simple-stats" id="simple-stats"></div>
+
+    <div class="heatmap-card">
+      <div class="title">When you use Claude</div>
+      <div class="subtitle">Each square is a day. Darker means heavier use. Last 13 weeks shown.</div>
+      <div class="heatmap-grid" id="heatmap-grid"></div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <span class="swatch" style="background: var(--border);"></span>
+        <span class="swatch" style="background: #f4c9b8;"></span>
+        <span class="swatch" style="background: #e89877;"></span>
+        <span class="swatch" style="background: #d4774f;"></span>
+        <span class="swatch" style="background: var(--accent);"></span>
+        <span>More</span>
+      </div>
+    </div>
+
+    <div class="projects-simple">
+      <div class="title">Where you spent the most time</div>
+      <div class="subtitle">Projects ranked by number of conversations.</div>
+      <div id="simple-projects"></div>
+    </div>
+  </div>
+
+  <!-- ── Advanced mode (original dashboard) ───────────────────────── -->
+  <div class="advanced-only stats-row" id="stats-row"></div>
+  <div class="advanced-only charts-grid">
     <div class="chart-card wide">
       <h2 id="daily-chart-title">Daily Token Usage</h2>
       <div class="chart-wrap tall"><canvas id="chart-daily"></canvas></div>
@@ -224,7 +389,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <div class="chart-wrap"><canvas id="chart-project"></canvas></div>
     </div>
   </div>
-  <div class="table-card">
+  <div class="advanced-only table-card">
     <div class="section-title">Cost by Model</div>
     <table>
       <thead><tr>
@@ -239,7 +404,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <tbody id="model-cost-body"></tbody>
     </table>
   </div>
-  <div class="table-card">
+  <div class="advanced-only table-card">
     <div class="section-header"><div class="section-title">Recent Sessions</div><button class="export-btn" onclick="exportSessionsCSV()" title="Export all filtered sessions to CSV">&#x2913; CSV</button></div>
     <table>
       <thead><tr>
@@ -256,7 +421,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <tbody id="sessions-body"></tbody>
     </table>
   </div>
-  <div class="table-card">
+  <div class="advanced-only table-card">
     <div class="section-header"><div class="section-title">Cost by Project</div><button class="export-btn" onclick="exportProjectsCSV()" title="Export all projects to CSV">&#x2913; CSV</button></div>
     <table>
       <thead><tr>
@@ -306,6 +471,25 @@ let projectSortDir = 'desc';
 let lastFilteredSessions = [];
 let lastByProject = [];
 let sessionSortDir = 'desc';
+let viewMode = 'simple';
+let userPlan = null;
+
+// ── Subscription plan config ───────────────────────────────────────────────
+// Prices and approximate limits reflect publicly documented Anthropic tiers.
+// Limits are approximations based on API-equivalent monthly cost headroom.
+const PLANS = [
+  { id: 'pro',   name: 'Pro',     price: 20,  subtitle: '/month',        okUpTo: 150,   warnUpTo: 500 },
+  { id: 'max5',  name: 'Max 5\u00d7',  price: 100, subtitle: '/month',   okUpTo: 750,   warnUpTo: 2500 },
+  { id: 'max20', name: 'Max 20\u00d7', price: 200, subtitle: '/month',   okUpTo: 3000,  warnUpTo: 10000 },
+  { id: 'api',   name: 'API',     price: null, subtitle: 'pay-as-you-go', okUpTo: Infinity, warnUpTo: Infinity },
+];
+
+function planStatus(plan, apiEquivCost) {
+  if (plan.id === 'api') return { kind: 'ok', text: 'pay only for what you use' };
+  if (apiEquivCost <= plan.okUpTo)   return { kind: 'ok',     text: 'within typical limits' };
+  if (apiEquivCost <= plan.warnUpTo) return { kind: 'warn',   text: 'may hit rate limits' };
+  return                                    { kind: 'exceed', text: 'would exceed limits' };
+}
 
 // ── Pricing (Anthropic API, April 2026) ────────────────────────────────────
 const PRICING = {
@@ -580,6 +764,11 @@ function applyFilter() {
   document.getElementById('daily-chart-title').textContent = 'Daily Token Usage \u2014 ' + RANGE_LABELS[selectedRange];
 
   renderStats(totals);
+  renderSimpleHeadline(totals, byModel, byProject);
+  renderPlanComparison(totals);
+  renderSimpleStats(totals);
+  renderHeatmap(daily);
+  renderSimpleProjects(byProject);
   renderDailyChart(daily);
   renderModelChart(byModel);
   renderProjectChart(byProject);
@@ -588,6 +777,238 @@ function applyFilter() {
   renderSessionsTable(lastFilteredSessions.slice(0, 20));
   renderModelCostTable(byModel);
   renderProjectCostTable(lastByProject.slice(0, 20));
+}
+
+// ── View mode toggle ───────────────────────────────────────────────────────
+function setViewMode(mode) {
+  viewMode = mode === 'advanced' ? 'advanced' : 'simple';
+  document.body.classList.toggle('view-simple', viewMode === 'simple');
+  document.body.classList.toggle('view-advanced', viewMode === 'advanced');
+  document.getElementById('view-simple-btn').classList.toggle('active', viewMode === 'simple');
+  document.getElementById('view-simple-btn').setAttribute('aria-selected', viewMode === 'simple');
+  document.getElementById('view-advanced-btn').classList.toggle('active', viewMode === 'advanced');
+  document.getElementById('view-advanced-btn').setAttribute('aria-selected', viewMode === 'advanced');
+  try { localStorage.setItem('cud_view_mode', viewMode); } catch(e) {}
+}
+
+// ── User plan selection ────────────────────────────────────────────────────
+function setUserPlan(planId) {
+  userPlan = planId;
+  try { localStorage.setItem('cud_user_plan', planId); } catch(e) {}
+  document.querySelectorAll('.plan-chip').forEach(c =>
+    c.classList.toggle('selected', c.dataset.plan === planId)
+  );
+  if (rawData) applyFilter();
+}
+
+function dismissPlanPicker() {
+  document.getElementById('plan-picker').style.display = 'none';
+  try { localStorage.setItem('cud_plan_picker_dismissed', '1'); } catch(e) {}
+}
+
+// ── Human-scale conversions ────────────────────────────────────────────────
+// ~0.75 words per token (English text); ~500 words per printed page.
+function tokensToPages(tokens) { return tokens * 0.75 / 500; }
+
+function fmtPages(tokens) {
+  const p = tokensToPages(tokens);
+  if (p < 1)    return '<1 page';
+  if (p < 10)   return p.toFixed(1) + ' pages';
+  if (p < 1000) return Math.round(p).toLocaleString() + ' pages';
+  if (p < 1e6)  return (p/1000).toFixed(1) + 'K pages';
+  return (p/1e6).toFixed(1) + 'M pages';
+}
+
+// ── Intensity classification ───────────────────────────────────────────────
+// Thresholds reflect typical monthly API-equivalent cost.
+// We normalize by selected range so the rating is always "per month equivalent."
+function intensityFor(apiEquivCost, rangeDays) {
+  const perMonth = apiEquivCost * (30 / Math.max(rangeDays, 1));
+  if (perMonth < 20)   return { key: 'light',   label: 'Light use',    desc: 'About what we see from users who try Claude a few times a week.' };
+  if (perMonth < 150)  return { key: 'typical', label: 'Typical use',  desc: 'About what we see from users who use Claude a few hours a week.' };
+  if (perMonth < 500)  return { key: 'heavy',   label: 'Heavy use',    desc: 'About what we see from users who use Claude daily for work.' };
+  return                      { key: 'power',   label: 'Power user',   desc: 'Among the heaviest users \u2014 Claude is a core part of your workflow.' };
+}
+
+function rangeDays() {
+  if (selectedRange === '7d')  return 7;
+  if (selectedRange === '30d') return 30;
+  if (selectedRange === '90d') return 90;
+  // "all": estimate from first/last day present in filtered data
+  if (!rawData || !rawData.daily_by_model.length) return 30;
+  const days = new Set(rawData.daily_by_model.map(r => r.day));
+  return Math.max(days.size, 1);
+}
+
+// ── Simple-mode renderers ─────────────────────────────────────────────────
+function dominantModel(byModel) {
+  if (!byModel.length) return null;
+  const sorted = [...byModel].sort((a, b) =>
+    (b.input + b.output + b.cache_read) - (a.input + a.output + a.cache_read)
+  );
+  return sorted[0].model;
+}
+
+function friendlyModelName(model) {
+  const m = (model || '').toLowerCase();
+  if (m.includes('opus'))   return 'Opus';
+  if (m.includes('sonnet')) return 'Sonnet';
+  if (m.includes('haiku'))  return 'Haiku';
+  return model || 'an unknown model';
+}
+
+function renderSimpleHeadline(totals, byModel, byProject) {
+  document.getElementById('headline-range').textContent = RANGE_LABELS[selectedRange];
+  const convos = totals.sessions.toLocaleString();
+  const projects = byProject.length;
+  const model = friendlyModelName(dominantModel(byModel));
+  const summary = `You had <strong>${convos} conversations</strong> with Claude across <strong>${projects} ${projects === 1 ? 'project' : 'projects'}</strong>, mostly using <strong>${esc(model)}</strong>.`;
+  document.getElementById('headline-summary').innerHTML = summary;
+
+  const intensity = intensityFor(totals.cost, rangeDays());
+  const pill = document.getElementById('intensity-pill');
+  pill.className = 'intensity-pill ' + intensity.key;
+  pill.textContent = intensity.label;
+  document.getElementById('intensity-desc').textContent = intensity.desc;
+}
+
+function renderPlanComparison(totals) {
+  const apiCost = totals.cost;
+  const rangeDayCount = rangeDays();
+  // Normalize to monthly equivalent for comparison
+  const monthly = apiCost * (30 / Math.max(rangeDayCount, 1));
+
+  // Reframe headline if user picked a plan
+  const title = document.getElementById('plan-comparison-title');
+  if (userPlan && userPlan !== 'api') {
+    const plan = PLANS.find(p => p.id === userPlan);
+    const saved = monthly - plan.price;
+    if (saved > 0) {
+      title.innerHTML = `Your <strong>${esc(plan.name)}</strong> plan saved you about <strong>$${saved.toFixed(0)}</strong> vs pay-per-use API pricing this month.`;
+    } else {
+      title.innerHTML = `Your <strong>${esc(plan.name)}</strong> plan at $${plan.price}/mo &mdash; API pay-per-use would have cost about <strong>$${monthly.toFixed(0)}</strong>.`;
+    }
+  } else if (userPlan === 'api') {
+    title.innerHTML = `You're on API pay-per-use. This month's usage cost about <strong>$${apiCost.toFixed(2)}</strong>.`;
+  } else {
+    title.textContent = 'What this would cost on each plan';
+  }
+
+  const grid = document.getElementById('plan-grid');
+  grid.innerHTML = PLANS.map(plan => {
+    const st = planStatus(plan, monthly);
+    const priceText = plan.price !== null
+      ? '$' + plan.price
+      : '$' + apiCost.toFixed(apiCost < 10 ? 2 : 0);
+    const isCurrent = userPlan === plan.id;
+    const icon = st.kind === 'ok' ? '\u2713' : st.kind === 'warn' ? '\u26a0' : '\u2717';
+    return `<div class="plan-card${isCurrent ? ' current' : ''}">
+      ${isCurrent ? '<span class="current-badge">Your plan</span>' : ''}
+      <div class="plan-name">${esc(plan.name)}</div>
+      <div class="plan-price">${priceText}</div>
+      <div class="plan-sub">${esc(plan.subtitle)}</div>
+      <div class="plan-status ${st.kind}">${icon} ${esc(st.text)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSimpleStats(totals) {
+  const cards = [
+    {
+      label: 'Text Claude wrote for you',
+      value: fmtPages(totals.output),
+      sub: fmt(totals.output) + ' output tokens',
+      tip: 'An estimate of how many printed pages of text Claude produced, at roughly 500 words per page.',
+    },
+    {
+      label: 'Text Claude read',
+      value: fmtPages(totals.input + totals.cache_read),
+      sub: fmt(totals.input + totals.cache_read) + ' input tokens',
+      tip: 'How much text Claude processed in total \u2014 your messages plus the files and project context it re-reads on every turn. The same file counted many times if it was in context for many turns, which is why this number can be very large.',
+    },
+    {
+      label: 'Conversations',
+      value: totals.sessions.toLocaleString(),
+      sub: 'separate chats',
+      tip: 'Each conversation is one Claude Code session \u2014 from when you start until you close it.',
+    },
+    {
+      label: 'Messages exchanged',
+      value: fmt(totals.turns),
+      sub: 'back-and-forths',
+      tip: 'One message from you plus one reply from Claude counts as one exchange.',
+    },
+  ];
+  document.getElementById('simple-stats').innerHTML = cards.map(c => `
+    <div class="simple-stat">
+      <div class="simple-label">${esc(c.label)}<span class="jargon help-icon" data-tooltip="${esc(c.tip)}" tabindex="0">?</span></div>
+      <div class="simple-value">${c.value}</div>
+      <div class="simple-sub">${esc(c.sub)}</div>
+    </div>
+  `).join('');
+}
+
+function renderHeatmap(daily) {
+  // Last 91 days (13 weeks), aligned to weeks ending today
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const dayToTokens = {};
+  for (const d of daily) {
+    dayToTokens[d.day] = (d.input || 0) + (d.output || 0) + (d.cache_read || 0);
+  }
+
+  const days = [];
+  for (let i = 90; i >= 0; i--) {
+    const dt = new Date(today);
+    dt.setDate(today.getDate() - i);
+    const key = dt.toISOString().slice(0, 10);
+    days.push({ key, tokens: dayToTokens[key] || 0, date: dt });
+  }
+  const max = Math.max(1, ...days.map(d => d.tokens));
+  function level(t) {
+    if (t === 0) return 0;
+    const r = t / max;
+    if (r < 0.25) return 1;
+    if (r < 0.5)  return 2;
+    if (r < 0.75) return 3;
+    return 4;
+  }
+
+  // Arrange as 13 columns (weeks) x 7 rows (days). We build column-major.
+  // Use grid-auto-flow: column so we can just output day-by-day in week-by-row order.
+  const grid = document.getElementById('heatmap-grid');
+  grid.style.gridAutoFlow = 'column';
+  grid.style.gridTemplateRows = 'repeat(7, 14px)';
+  grid.style.gridTemplateColumns = 'repeat(13, 1fr)';
+  grid.innerHTML = days.map(d => {
+    const lvl = level(d.tokens);
+    const tip = d.tokens === 0
+      ? d.key + ' \u2014 no Claude use'
+      : d.key + ' \u2014 ' + fmt(d.tokens) + ' tokens';
+    return `<div class="heatmap-cell" data-level="${lvl}" title="${esc(tip)}"></div>`;
+  }).join('');
+}
+
+function renderSimpleProjects(byProject) {
+  const top = [...byProject].sort((a, b) => b.sessions - a.sessions).slice(0, 8);
+  if (!top.length) {
+    document.getElementById('simple-projects').innerHTML = '<div class="muted" style="padding:12px 0;font-size:13px;">No project activity in this range.</div>';
+    return;
+  }
+  const maxSessions = Math.max(...top.map(p => p.sessions));
+  function shortName(path) {
+    if (!path) return 'unknown';
+    const parts = path.split(/[\\/]/).filter(Boolean);
+    return parts.slice(-1)[0] || path;
+  }
+  document.getElementById('simple-projects').innerHTML = top.map(p => {
+    const pct = Math.max(4, Math.round((p.sessions / maxSessions) * 100));
+    return `<div class="project-bar" title="${esc(p.project)}">
+      <div class="proj-name">${esc(shortName(p.project))}</div>
+      <div class="proj-track"><div class="proj-fill" style="width:${pct}%"></div></div>
+      <div class="proj-count">${p.sessions} ${p.sessions === 1 ? 'conversation' : 'conversations'}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── Renderers ──────────────────────────────────────────────────────────────
@@ -870,6 +1291,23 @@ async function loadData() {
     rawData = d;
 
     if (isFirstLoad) {
+      // Restore view mode (default: simple)
+      let savedMode = 'simple';
+      try { savedMode = localStorage.getItem('cud_view_mode') || 'simple'; } catch(e) {}
+      setViewMode(savedMode);
+      // Restore user plan selection
+      try { userPlan = localStorage.getItem('cud_user_plan'); } catch(e) {}
+      if (userPlan) {
+        document.querySelectorAll('.plan-chip').forEach(c =>
+          c.classList.toggle('selected', c.dataset.plan === userPlan)
+        );
+      }
+      // Restore plan picker dismissed state (also treat a chosen plan as dismissed)
+      let dismissed = false;
+      try { dismissed = localStorage.getItem('cud_plan_picker_dismissed') === '1'; } catch(e) {}
+      if (dismissed || userPlan) {
+        document.getElementById('plan-picker').style.display = 'none';
+      }
       // Restore range from URL, mark active button
       selectedRange = readURLRange();
       document.querySelectorAll('.range-btn').forEach(btn =>
