@@ -9,7 +9,23 @@ Claude Code writes detailed usage logs locally — token counts, models, session
 
 ![Claude Usage Dashboard](docs/screenshot.png)
 
-**Created by:** [The Product Compass Newsletter](https://www.productcompass.pm)
+**Fork by:** [dhruvtrip](https://github.com/dhruvtrip) &nbsp;·&nbsp; **Original by:** [The Product Compass Newsletter](https://www.productcompass.pm)
+
+---
+
+## What's new in this fork
+
+### Simple view for non-technical users
+A clean, jargon-free view alongside the full analytics dashboard. Toggle between **Simple** and **Advanced** mode to see plain-English usage summaries — no token counts or cost tables, just how much you've used Claude and when. 
+
+This is best for non-technical users.
+
+Users can also compare plan prices to their usage.
+
+![Simple Dashboard View](docs/calude-dashboard-simplify.png)
+
+### Claude-inspired UI design
+The dashboard uses a design system modelled after Anthropic's own visual language — warm parchment backgrounds, terracotta accents, serif headlines, and generous whitespace. See `DESIGN.md` for the full spec.
 
 ---
 
@@ -40,15 +56,15 @@ No `pip install`, no virtual environment, no build step.
 
 ### Windows
 ```
-git clone https://github.com/phuryn/claude-usage
-cd claude-usage
+git clone https://github.com/dhruvtrip/claude-usage-prettier
+cd claude-usage-prettier
 python cli.py dashboard
 ```
 
 ### macOS / Linux
 ```
-git clone https://github.com/phuryn/claude-usage
-cd claude-usage
+git clone https://github.com/dhruvtrip/claude-usage-prettier
+cd claude-usage-prettier
 python3 cli.py dashboard
 ```
 
@@ -95,7 +111,7 @@ Claude Code writes one JSONL file per session to `~/.claude/projects/`. Each lin
 
 `scanner.py` parses those files and stores the data in a SQLite database at `~/.claude/usage.db`.
 
-`dashboard.py` serves a single-page dashboard on `localhost:8080` with Chart.js charts (loaded from CDN). It auto-refreshes every 30 seconds and supports model filtering with bookmarkable URLs. The bind address and port can be overridden with `HOST` and `PORT` environment variables (defaults: `localhost`, `8080`).
+`dashboard.py` serves a single-page dashboard on `localhost:8080` with two view modes — **Simple** (plain-English summaries) and **Advanced** (full analytics with Chart.js charts). It auto-refreshes every 30 seconds and supports model filtering with bookmarkable URLs. The bind address and port can be overridden with `HOST` and `PORT` environment variables (defaults: `localhost`, `8080`).
 
 ---
 
