@@ -244,20 +244,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .simple-stat .simple-value { font-family: Georgia, serif; font-size: 26px; font-weight: 500; color: var(--text); line-height: 1.1; }
   .simple-stat .simple-sub { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: monospace; }
 
-  /* ── Simple mode: activity heatmap ───────────────────────────────────── */
-  .heatmap-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
-  .heatmap-card .title { font-family: Georgia, serif; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-  .heatmap-card .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
-  .heatmap-grid { display: grid; grid-template-columns: repeat(13, 1fr); grid-auto-rows: 14px; gap: 3px; max-width: 640px; }
-  .heatmap-cell { background: var(--border); border-radius: 2px; aspect-ratio: 1; cursor: pointer; transition: transform 0.1s; }
-  .heatmap-cell:hover { transform: scale(1.35); }
-  .heatmap-cell[data-level="0"] { background: var(--border); }
-  .heatmap-cell[data-level="1"] { background: #f4c9b8; }
-  .heatmap-cell[data-level="2"] { background: #e89877; }
-  .heatmap-cell[data-level="3"] { background: #d4774f; }
-  .heatmap-cell[data-level="4"] { background: var(--accent); }
-  .heatmap-legend { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--muted); justify-content: flex-end; }
-  .heatmap-legend .swatch { width: 12px; height: 12px; border-radius: 2px; }
+
 
   /* ── Simple mode: reframed projects ──────────────────────────────────── */
   .projects-simple { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
@@ -287,8 +274,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .help-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: var(--warm-sand); color: var(--secondary); font-size: 10px; font-weight: 600; margin-left: 3px; cursor: help; }
 
   @media (max-width: 768px) {
-    .heatmap-grid { max-width: 100%; }
-    .headline .summary { font-size: 18px; }
+.headline .summary { font-size: 18px; }
   }
 </style>
 </head>
@@ -351,22 +337,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
     <div class="simple-stats" id="simple-stats"></div>
 
-    <div class="heatmap-card">
-      <div class="title">When you use Claude</div>
-      <div class="subtitle">Each square is a day. Darker means heavier use. Last 13 weeks shown.</div>
-      <div class="heatmap-grid" id="heatmap-grid"></div>
-      <div class="heatmap-legend">
-        <span>Less</span>
-        <span class="swatch" style="background: var(--border);"></span>
-        <span class="swatch" style="background: #f4c9b8;"></span>
-        <span class="swatch" style="background: #e89877;"></span>
-        <span class="swatch" style="background: #d4774f;"></span>
-        <span class="swatch" style="background: var(--accent);"></span>
-        <span>More</span>
-      </div>
-    </div>
-
-    <div class="projects-simple">
+<div class="projects-simple">
       <div class="title">Where you spent the most time</div>
       <div class="subtitle">Projects ranked by number of conversations.</div>
       <div id="simple-projects"></div>
@@ -767,7 +738,6 @@ function applyFilter() {
   renderSimpleHeadline(totals, byModel, byProject);
   renderPlanComparison(totals);
   renderSimpleStats(totals);
-  renderHeatmap(daily);
   renderSimpleProjects(byProject);
   renderDailyChart(daily);
   renderModelChart(byModel);
@@ -946,47 +916,6 @@ function renderSimpleStats(totals) {
       <div class="simple-sub">${esc(c.sub)}</div>
     </div>
   `).join('');
-}
-
-function renderHeatmap(daily) {
-  // Last 91 days (13 weeks), aligned to weeks ending today
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const dayToTokens = {};
-  for (const d of daily) {
-    dayToTokens[d.day] = (d.input || 0) + (d.output || 0) + (d.cache_read || 0);
-  }
-
-  const days = [];
-  for (let i = 90; i >= 0; i--) {
-    const dt = new Date(today);
-    dt.setDate(today.getDate() - i);
-    const key = dt.toISOString().slice(0, 10);
-    days.push({ key, tokens: dayToTokens[key] || 0, date: dt });
-  }
-  const max = Math.max(1, ...days.map(d => d.tokens));
-  function level(t) {
-    if (t === 0) return 0;
-    const r = t / max;
-    if (r < 0.25) return 1;
-    if (r < 0.5)  return 2;
-    if (r < 0.75) return 3;
-    return 4;
-  }
-
-  // Arrange as 13 columns (weeks) x 7 rows (days). We build column-major.
-  // Use grid-auto-flow: column so we can just output day-by-day in week-by-row order.
-  const grid = document.getElementById('heatmap-grid');
-  grid.style.gridAutoFlow = 'column';
-  grid.style.gridTemplateRows = 'repeat(7, 14px)';
-  grid.style.gridTemplateColumns = 'repeat(13, 1fr)';
-  grid.innerHTML = days.map(d => {
-    const lvl = level(d.tokens);
-    const tip = d.tokens === 0
-      ? d.key + ' \u2014 no Claude use'
-      : d.key + ' \u2014 ' + fmt(d.tokens) + ' tokens';
-    return `<div class="heatmap-cell" data-level="${lvl}" title="${esc(tip)}"></div>`;
-  }).join('');
 }
 
 function renderSimpleProjects(byProject) {
