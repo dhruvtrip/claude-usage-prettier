@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-04-19
+
+- Forked from [phuryn/claude-usage](https://github.com/phuryn/claude-usage) with UI and UX improvements
+- Add Simple view mode for non-technical users with plain-English summaries and plan cost comparison
+- Add Claude-inspired UI design system (warm parchment palette, terracotta accents, serif headlines)
+- Add user plan selector to compare Pro/Max/API pricing against actual usage
+- Fix view mode toggle click area clipped by `overflow: hidden` on the toggle container
+- Update README with fork attribution, new features, and Simple view screenshot
+
 ## 2026-04-09
 
 - Fix token counts inflated ~2x by deduplicating streaming events that share the same message ID
